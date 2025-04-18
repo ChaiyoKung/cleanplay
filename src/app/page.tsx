@@ -9,7 +9,7 @@ export default async function Home() {
 
   return (
     <HydrateClient>
-      <header className="flex items-center justify-between px-4 py-3">
+      <header className="sticky top-0 z-10 flex items-center justify-between bg-zinc-950 px-4 py-2">
         <Link href="/">
           <h1 className="text-xl font-bold">
             Clean<span className="text-red-500">Play</span>
