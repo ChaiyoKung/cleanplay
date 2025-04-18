@@ -65,7 +65,7 @@ export function ProfileDropdown({ user }: ProfileDropdownProps) {
     <Menu>
       {profileImageButton}
 
-      <MenuItems anchor="bottom end" className="rounded-xl bg-zinc-800">
+      <MenuItems anchor="bottom end" className="z-20 rounded-xl bg-zinc-800">
         <MenuItem>
           <div className="flex gap-4 p-4">
             <div>{profileImageDisplay}</div>
