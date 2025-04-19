@@ -41,12 +41,21 @@ export const authConfig = {
      */
   ],
   callbacks: {
-    session: ({ session, token }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: token.sub,
-      },
-    }),
+    signIn: ({ account, profile }) => {
+      if (account?.provider === "google" && profile?.email_verified) {
+        return true;
+      }
+
+      return false;
+    },
+    session: ({ session, token }) => {
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: token.sub,
+        },
+      };
+    },
   },
 } satisfies NextAuthConfig;
