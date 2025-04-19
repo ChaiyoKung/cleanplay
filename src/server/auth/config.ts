@@ -1,4 +1,5 @@
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
+import type { DefaultJWT } from "next-auth/jwt";
 import GoogleProvider from "next-auth/providers/google";
 
 /**
@@ -14,12 +15,19 @@ declare module "next-auth" {
       // ...other properties
       // role: UserRole;
     } & DefaultSession["user"];
+    accessToken: string;
   }
 
   // interface User {
   //   // ...other properties
   //   // role: UserRole;
   // }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT extends DefaultJWT {
+    accessToken: string;
+  }
 }
 
 /**
@@ -29,7 +37,17 @@ declare module "next-auth" {
  */
 export const authConfig = {
   providers: [
-    GoogleProvider,
+    GoogleProvider({
+      authorization: {
+        params: {
+          scope: [
+            "https://www.googleapis.com/auth/userinfo.profile",
+            "https://www.googleapis.com/auth/userinfo.email",
+            "https://www.googleapis.com/auth/youtube.readonly",
+          ].join(" "),
+        },
+      },
+    }),
     /**
      * ...add more providers here.
      *
@@ -48,9 +66,20 @@ export const authConfig = {
 
       return false;
     },
+    jwt: ({ token, account }) => {
+      if (account) {
+        return {
+          ...token,
+          accessToken: account.access_token ?? "",
+        };
+      }
+
+      return token;
+    },
     session: ({ session, token }) => {
       return {
         ...session,
+        accessToken: token.accessToken,
         user: {
           ...session.user,
           id: token.sub,
