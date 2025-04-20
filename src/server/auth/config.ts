@@ -87,7 +87,7 @@ export const authConfig = {
     jwt: async ({ token, account }) => {
       // First-time login, save the `access_token`, its expiry and the `refresh_token`
       if (account) {
-        console.debug("First time login");
+        console.debug("[auth][callbacks.jwt] First time login");
         return {
           ...token,
           access_token: account.access_token ?? "",
@@ -98,13 +98,13 @@ export const authConfig = {
 
       // Subsequent logins, but the `access_token` is still valid
       if (Date.now() < token.expires_at * 1000) {
-        console.debug("Access token is still valid");
+        console.debug("[auth][callbacks.jwt] Access token is still valid");
         return token;
       }
 
       // Subsequent logins, but the `access_token` has expired, try to refresh it
       if (!token.refresh_token) {
-        console.debug("No refresh token available");
+        console.debug("[auth][callbacks.jwt] No refresh token available");
         return {
           ...token,
           error: "RefreshTokenError",
@@ -112,7 +112,7 @@ export const authConfig = {
       }
 
       try {
-        console.debug("Refreshing access token");
+        console.debug("[auth][callbacks.jwt] Refreshing access token");
         // The `token_endpoint` can be found in the provider's documentation. Or if they support OIDC,
         // at their `/.well-known/openid-configuration` endpoint.
         // i.e. https://accounts.google.com/.well-known/openid-configuration
@@ -140,7 +140,10 @@ export const authConfig = {
           refresh_token: newTokens.refresh_token ?? token.refresh_token,
         };
       } catch (error) {
-        console.error("Error refreshing access token", error);
+        console.error(
+          "[auth][callbacks.jwt] Error refreshing access token",
+          error
+        );
         return {
           ...token,
           error: "RefreshTokenError",
