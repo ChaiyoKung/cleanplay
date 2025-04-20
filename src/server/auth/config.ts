@@ -36,7 +36,7 @@ declare module "next-auth/jwt" {
   }
 }
 
-const tokenResponseSchema = z.object({
+const tokenSchema = z.object({
   access_token: z.string(),
   expires_in: z.number(),
   refresh_token: z.string().optional(),
@@ -130,7 +130,7 @@ export const authConfig = {
 
         if (!response.ok) throw tokensOrError;
 
-        const newTokens = tokenResponseSchema.parse(tokensOrError);
+        const newTokens = tokenSchema.parse(tokensOrError);
 
         return {
           ...token,
