@@ -75,9 +75,11 @@ export const authConfig = {
   callbacks: {
     signIn: ({ account, profile }) => {
       if (account?.provider === "google" && profile?.email_verified) {
+        console.debug("[auth][callbacks.signIn] Google account verified");
         return true;
       }
 
+      console.debug("[auth][callbacks.signIn] Google account not verified");
       return false;
     },
 
